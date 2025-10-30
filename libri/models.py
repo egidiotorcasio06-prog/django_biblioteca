@@ -19,9 +19,12 @@ class Libro(models.Model):
         null=True,
         blank=True
     )
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 0a5445e3f91971f729e8bbbeeaf306d323885f21
 
     def __str__(self):
         return self.titolo
