@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ libro.titolo }}</title>
+</head>
+<body>
+    <h1>{{ titolo_pagina }}</h1>
+    
+    <div class="dettagli-libro">
+        <p><strong>Autore:</strong> {{ libro.autore }}</p>
+        <p><strong>Anno di Pubblicazione:</strong> {{ libro.anno_pubblicazione }}</p>
+        <p><strong>Descrizione:</strong> {{ libro.descrizione }}</p>
+        
+        <hr>
+        
+        <h2>Dati di Acquisto</h2>
+        <p>
+            <strong>Prezzo:</strong> **€{{ libro.prezzo|default:"N/D" }}**<br>
+            <strong>Acquistato il:</strong> *{{ libro.data_acquisto|date:"d M Y"|default:"Non registrata" }}*
+        </p>
+    </div>
+    
+    <hr>
+    
+    <p><a href="{% url 'lista_libri' %}">← Torna all'elenco completo</a></p>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Libro
 from .forms import LibroForm
 
@@ -25,6 +25,13 @@ def aggiungi_libro(request):
     }
     return render(request, 'libri/aggiungi_libro.html', context)
 
+def dettaglio_libro(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)
+    context = {
+        'libro' : libro,
+        'titolo_pagina' : f'Dettaglio: {libro.titolo}'
+    }
+    return render(request, 'libri/dettaglio_libro.html', context)
 
 
 # Create your views here.

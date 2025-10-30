@@ -15,8 +15,9 @@
         <ul>
         {% for libro in elenco_libri %}
             <li>
+                <a href="{% url 'dettaglio_libro' pk=libro.pk %}">
                 <strong>Titolo:</strong> {{ libro.titolo }} ({{ libro.anno_pubblicazione }})<br>
-                Autore: {{ libro.autore }}<br>
+                Autore: {{ libro.autore }}</a><br>
                 
                 **Prezzo:** **€{{ libro.prezzo|default:"N/D" }}**<br>
                 **Acquistato il:** *{{ libro.data_acquisto|date:"d M Y"|default:"Non registrata" }}*<br>
