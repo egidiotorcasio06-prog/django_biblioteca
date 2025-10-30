@@ -6,22 +6,28 @@
 </head>
 <body>
     <h1>{% if titolo_pagina %}{{ titolo_pagina }}{% else %}Elenco Libri{% endif %}</h1>
+    
     <hr>
+    
     {% if elenco_libri %}
         <h2>Ci sono {{ elenco_libri|length }} libri registrati:</h2>
-
+        
         <ul>
-            {# Itera sulla lista 'elenco_libri' passata dalla View #}
-            {% for libro in elenco_libri %}
-                 <li>
-                    <strong>Titolo:</strong> {{ libro.titolo }} ({{ libro.anno_pubblicazione }})<br>
-                    **Autore:** {{ libro.autore }}<br>
-                    *Descrizione:* {{ libro.descrizione|truncatechars:50 }}
-                 </li>
-        {% endfor %}         
+        {% for libro in elenco_libri %}
+            <li>
+                <strong>Titolo:</strong> {{ libro.titolo }} ({{ libro.anno_pubblicazione }})<br>
+                Autore: {{ libro.autore }}<br>
+                
+                **Prezzo:** **€{{ libro.prezzo|default:"N/D" }}**<br>
+                **Acquistato il:** *{{ libro.data_acquisto|date:"d M Y"|default:"Non registrata" }}*<br>
+                *Descrizione:* {{ libro.descrizione|truncatechars:50 }}
+            </li>
+        {% endfor %}
         </ul>
+        
     {% else %}
-         <p>Non ci sono libri registrati nel catalogo. Aggiungi libri!</p>
-    {% endif %}         
+        <p>Non ci sono libri registrati nel catalogo. Aggiungine alcuni!</p>
+    {% endif %}
+
 </body>
 </html>
