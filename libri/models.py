@@ -19,6 +19,8 @@ class Libro(models.Model):
         null=True,
         blank=True
     )
+    isbn = models.CharField(max_length=13, unique=True, null=True, blank=True) # ISBN ha max 13 cifre ed è unico
+    numero_pagine = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.titolo

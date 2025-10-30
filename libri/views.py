@@ -1,13 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Avg, Count, F
 from .models import Libro
 from .forms import LibroForm
 
 def lista_libri(request):
     tutti_i_libri = Libro.objects.all()
+    statistiche = {}
+    if lista_libri.exists():
+        statistiche['totale_libri'] = lista_libri.count()
+        statistiche['pagine_medie'] = lista_libri.exclude(numero_pagine__isnull=True).aggregate(
+            Avg('numero_pagine')
+        )['numero_pagine__avg']
+        statistiche['libri_per_autore'] = lista_libri.values('autore').annotate(
+            count=Count('autore')
+        ).order_by('-count')[:3]
     context = {
         'elenco_libri' : tutti_i_libri,
         'titolo_pagina' : 'Catalogo Completo Libri'
     }
+    
+    
     return render(request, 'libri/lista_libri.html', context)
 
 def aggiungi_libro(request):

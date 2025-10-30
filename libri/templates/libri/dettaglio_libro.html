@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ libro.titolo }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9; 
+            color: #333;
+        }
+        h1 {
+            color: #007bff; 
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 15px;
+            background-color: #fff; 
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>{{ titolo_pagina }}</h1>
@@ -11,7 +32,9 @@
         <p><strong>Autore:</strong> {{ libro.autore }}</p>
         <p><strong>Anno di Pubblicazione:</strong> {{ libro.anno_pubblicazione }}</p>
         <p><strong>Descrizione:</strong> {{ libro.descrizione }}</p>
-        
+        <p><strong>Pagine:</strong> {{ libro.numero_pagine|default:"N/D" }}</p>
+        <p><strong>Descrizione:</strong> {{ libro.descrizione }}</p>
+
         <hr>
         
         <h2>Dati di Acquisto</h2>

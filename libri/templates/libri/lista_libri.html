@@ -6,6 +6,24 @@
 </head>
 <body>
     <h1>{% if titolo_pagina %}{{ titolo_pagina }}{% else %}Elenco Libri{% endif %}</h1>
+    {% if statistiche.totale_libri %}
+<div style="border: 2px solid #007bff; padding: 15px; margin-bottom: 20px; background-color: #eaf6ff; border-radius: 5px;">
+    <h2>📊 Statistiche del Catalogo</h2>
+    <p><strong>Libri totali:</strong> {{ statistiche.totale_libri }}</p>
+    {% if statistiche.pagine_medie %}
+        <p><strong>Media Pagine:</strong> {{ statistiche.pagine_medie|floatformat:0 }}</p>
+    {% endif %}
+    
+    {% if statistiche.libri_per_autore %}
+        <p><strong>Top 3 Autori:</strong></p>
+        <ul>
+            {% for autore in statistiche.libri_per_autore %}
+                <li>{{ autore.autore }}: {{ autore.count }} libri</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endif %}
     
     <hr>
     
