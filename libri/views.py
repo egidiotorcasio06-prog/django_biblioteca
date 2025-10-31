@@ -57,9 +57,11 @@ def aggiungi_libro(request):
 
 def dettaglio_libro(request, pk):
     libro = get_object_or_404(Libro, pk=pk)
+    media_voti = libro.recensioni.aggregate(Avg('voto'))['voto__avg']
     context = {
         'libro' : libro,
-        'titolo_pagina' : f'Dettaglio: {libro.titolo}'
+        'titolo_pagina' : f'Dettaglio: {libro.titolo}',
+        'media_voti': f'{media_voti:.2f}' if media_voti else 'N/D'
     }
     return render(request, 'libri/dettaglio_libro.html', context)
 

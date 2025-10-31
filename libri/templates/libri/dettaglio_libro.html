@@ -29,7 +29,19 @@
     <h1>{{ titolo_pagina }}</h1>
     
     <div class="dettagli-libro">
-        <p><strong>Autore:</strong> {{ libro.autore }}</p>
+        <p><strong>Autore:</strong> {{ libro.autore }} {{ libro.autore.nome }} {{ libro.autore.cognome }}</p>
+    
+    {% if media_voti != 'N/D' %}
+        <p>⭐ **Voto Medio:** {{ media_voti }} / 5</p>
+    {% endif %}
+    
+    <p><strong>Categorie:</strong> 
+        {% for cat in libro.categorie.all %}
+            <span style="background-color: #e9e9e9; padding: 2px 5px; border-radius: 3px;">{{ cat.nome }}</span>
+        {% empty %}
+            Nessuna Categoria
+        {% endfor %}
+        </p>
         <p><strong>Anno di Pubblicazione:</strong> {{ libro.anno_pubblicazione }}</p>
         <p><strong>Descrizione:</strong> {{ libro.descrizione }}</p>
         <p><strong>Pagine:</strong> {{ libro.numero_pagine|default:"N/D" }}</p>
