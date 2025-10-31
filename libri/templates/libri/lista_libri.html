@@ -21,8 +21,62 @@
                 <li>{{ autore.autore }}: {{ autore.count }} libri</li>
             {% endfor %}
         </ul>
+    {% if page_obj.has_other_pages %}
+    <div class="pagination" style="text-align: center; margin-top: 20px;">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; prima</a>
+            <a href="?page={{ page_obj.previous_page_number }}">precedente</a>
+        {% endif %}
+
+        <span class="current">
+            Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">successiva</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">ultima &raquo;</a>
+        {% endif %}
     {% endif %}
+    <h2>🔍 Filtri di Ricerca Avanzata</h2>
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Applica Filtri</button>
+</form>
+<hr>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="width: 80%; margin: 50px auto;">
+    <h2>Distribuzione Libri per Anno di Pubblicazione</h2>
+    <canvas id="libriChart"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('libriChart').getContext('2d');
+    
+    
+    const labels = { statistiche_chart_labels_safe };
+    const data_counts = { statistiche_chart_data };
+    
+    new Chart(ctx, {
+        type: 'bar', 
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '# Libri Pubblicati',
+                data: data_counts,
+                backgroundColor: 'rgba(0, 123, 255, 0.5)', // Blu del tema
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
 {% endif %}
     
     <hr>
