@@ -94,6 +94,17 @@ def modifica_libro(request, pk):
         'titolo_pagina' : f'Modifica: {libro.titolo}'
     }
     return render(request, 'libri/modifica_lbro.html', context)
+def elimina_libro(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)
+    if request.method == 'POST':
+        libro.delete()
+        return redirect('lista_lbri')
+    context = {
+        'libro' : libro,
+        'titolo_pagina' : f'Conferma Eliminazione: {libro.titolo}'
+    }
+    return render(request, 'libri/elimina_libro.html', context)
+
 
 
 # Create your views here.

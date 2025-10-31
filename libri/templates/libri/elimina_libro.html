@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titolo_pagina }}</title>
+</head>
+<body>
+    
+    <h1>Conferma Eliminazione</h1>
+    
+    <p>Sei sicuro di voler eliminare permanentemente il libro:</p>
+    <h2>"{{ libro.titolo }}" (Autore: {{ libro.autore.cognome }})?</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <button type="submit" style="background-color: red; color: white; padding: 10px 15px; border: none; cursor: pointer;">
+            SÌ, ELIMINA
+        </button>
+        
+        <a href="{% url 'dettaglio_libro' pk=libro.pk %}" style="margin-left: 20px;">
+            No, Annulla
+        </a>
+    </form>
+
+</body>
+</html>
