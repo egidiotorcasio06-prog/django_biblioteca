@@ -1,44 +1,46 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg, Count, F
+from django.db.models import Avg, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from .models import Libro, Recensione
 from .forms import RecensioneForm
 from .forms import LibroForm
 from .filters import LibroFilter
+import json
 
 def lista_libri(request):
     tutti_i_libri = Libro.objects.all().order_by('titolo')
-    page_number = request.Get.get('page')
-    paginator = Paginator(lista_libri, 10)
+    libro_filter = LibroFilter(request.GET, queryset=tutti_i_libri)
+    elenco_filtrato = libro_filter.qs
+    page_number = request.GET.get('page')
+    paginator = Paginator(elenco_filtrato, 10)
     page_obj = paginator.get_page(page_number)
-    paginator = Paginator(elenco_filtrato, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    libri_per_anno = Libro.objects.values('anno_pubblicazione').annotate(
+    libri_per_anno = tutti_i_libri.values('anno_pubblicazione').annotate(
         count=Count('pk')
     ).order_by('anno_pubblicazione')
     statistiche = {}
-    if lista_libri.exists():
-        statistiche['totale_libri'] = lista_libri.count()
-        statistiche['pagine_medie'] = lista_libri.exclude(numero_pagine__isnull=True).aggregate(
+    if tutti_i_libri.exists():
+        statistiche['totale_libri'] = tutti_i_libri.count()
+        statistiche['pagine_medie'] = tutti_i_libri.exclude(numero_pagine__isnull=True).aggregate(
             Avg('numero_pagine')
         )['numero_pagine__avg']
-        statistiche['libri_per_autore'] = lista_libri.values('autore').annotate(
+        statistiche['libri_per_autore'] = tutti_i_libri.values('autore').annotate(
             count=Count('autore')
         ).order_by('-count')[:3]
         statistiche['chart_labels'] = [item['anno_pubblicazione'] for item in libri_per_anno]
-    statistiche['chart_data'] = [item['count'] for item in libri_per_anno]
-    libro_filter = LibroFilter(request.GET, queryset=lista_libri)
-    elenco_filtrato = libro_filter.qs
+        statistiche['chart_data'] = [item['count'] for item in libri_per_anno]
+    else:
+        statistiche['chart_labels'] = []
+        statistiche['chart_data'] = [] 
+        
     context = {
-        'elenco_libri' : tutti_i_libri,
-        'titolo_pagina' : 'Catalogo Completo Libri'
-        'page_obj',
-        'lista_libri' : page_obj.object_list,
-        'titolo_pagina' : 'Catalogo Completo'
-        'statistiche'
-        'filter'  
+        'elenco_libri' : page_obj,
+        'titolo_pagina' : 'Catalogo Completo Libri',
+        'page_obj' : page_obj,
+        'statistiche' : statistiche,
+        'filter' : libro_filter
     }
     return render(request, 'libri/lista_libri.html', context)
 @login_required(redirect_field_name='next', login_url='/accounts/login/')

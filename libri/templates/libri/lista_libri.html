@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Catalogo Libri</title>
+</head>
+<body>
+    <div style="text-align: right; margin-bottom: 20px;">
+        {% if user.is_authenticated %}
+            Benvenuto, <strong>{{ user.username }}</strong>!
+            (<a href="{% url 'logout' %}">Logout</a>)
+            | <a href="{% url 'aggiungi_libro' %}">➕ Aggiungi Libro</a>
+        {% else %}
+            <a href="{% url 'login' %}">Accedi</a> | <a href="{% url 'admin:index' %}">Registrati (Admin)</a>
+        {% endif %}
+    </div>
+    <hr>
+    <h1>{% if titolo_pagina %}{{ titolo_pagina }}{% else %}Elenco Libri{% endif %}</h1>
+
+    {% if statistiche.totale_libri %}
+    <div style="border: 2px solid #007bff; padding: 15px; margin-bottom: 20px; background-color: #eaf6ff; border-radius: 5px;">
+        <h2>📊 Statistiche del Catalogo</h2>
+        <p><strong>Libri totali:</strong> {{ statistiche.totale_libri }}</p>
+        
+        {% if statistiche.pagine_medie %}
+            <p><strong>Media Pagine:</strong> {{ statistiche.pagine_medie|floatformat:0 }}</p>
+        {% endif %}
+        
+        {% if statistiche.libri_per_autore %}
+            <p><strong>Top 3 Autori:</strong></p>
+            <ul>
+                {% for autore in statistiche.libri_per_autore %}
+                    <li>{{ autore.autore }}: {{ autore.count }} libri</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <hr>
+        <h2>🔍 Filtri di Ricerca Avanzata</h2>
+        <form method="get">
+            {{ filter.form.as_p }}
+            <button type="submit">Applica Filtri</button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div style="width: 80%; margin: 50px auto;">
+        <h2>Distribuzione Libri per Anno di Pubblicazione</h2>
+        <canvas id="libriChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('libriChart').getContext('2d');
+        
+        // Pulizia estrema degli spazi bianchi interni
+        const labels = {statistiche,chart_labels_safe};
+        const data_counts = {statistiche,chart_data_safe};
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# Libri Pubblicati',
+                    data: data_counts,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)', // Blu del tema
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+
+    {% endif %} 
+    <hr>
+        
+    {% if elenco_libri %}
+        <h2>Ci sono {{ elenco_libri|length }} libri registrati:</h2>
+        
+        {% if page_obj.has_other_pages %}
+        <div class="pagination" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; prima</a>
+                <a href="?page={{ page_obj.previous_page_number }}">precedente</a>
+            {% endif %}
+
+            <span class="current" style="margin: 0 10px;">
+                Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">successiva</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">ultima &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <ul>
+        {% for libro in elenco_libri %}
+            <li>
+                <a href="{% url 'dettaglio_libro' pk=libro.pk %}">
+                    <strong>{{ libro.titolo }}</strong> ({{ libro.anno_pubblicazione }}) - <em>{{ libro.autore }}</em>
+                </a>
+                
+                <p style="margin-top: 5px; margin-bottom: 10px; font-size: 0.9em; line-height: 1.5;">
+                    <strong>Prezzo:</strong> <span style="font-weight: bold; color: #cc0000;">€{{ libro.prezzo|default:"N/D" }}</span><br>
+                    <strong>Acquistato il:</strong> <em>{{ libro.data_acquisto|date:"d M Y"|default:"Non registrata" }}</em><br>
+                    <em>Descrizione:</em> {{ libro.descrizione|truncatechars:50 }}
+                </p>
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% if page_obj.has_other_pages %}
+        <div class="pagination" style="text-align: center; margin-top: 20px;">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; prima</a>
+                <a href="?page={{ page_obj.previous_page_number }}">precedente</a>
+            {% endif %}
+
+            <span class="current" style="margin: 0 10px;">
+                Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">successiva</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">ultima &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+    {% else %}
+        <p>Non ci sono libri registrati nel catalogo. Aggiungine alcuni!</p>
+    {% endif %}
+
+</body>
+</html>
