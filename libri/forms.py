@@ -1,5 +1,5 @@
 from django import forms 
-from .models import Libro
+from .models import Libro, Autore, Categoria, Recensione
 
 class LibroForm(forms.ModelForm):
     class Meta:
@@ -10,3 +10,15 @@ class LibroForm(forms.ModelForm):
             'data_acquisto': 'Data di Acquisto (AAAA-MM-GG)',
             'numero_pagine': 'Numero di Pagine',
         }
+
+class RecensioneForm(forms.ModelForm):
+    class Meta:
+        model = Recensione
+        # Includiamo solo i campi che l'utente deve compilare: voto e commento
+        fields = ['voto', 'commento']
+        
+        # Puoi usare i widgets per migliorare l'input, ad esempio per il voto
+        widgets = {
+            'voto': forms.NumberInput(attrs={'min': 1, 'max': 5, 'placeholder': 'Voto (1-5)'}),
+            'commento': forms.Textarea(attrs={'rows': 4}),
+        }       

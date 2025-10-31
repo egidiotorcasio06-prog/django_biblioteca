@@ -41,7 +41,50 @@
         {% empty %}
             Nessuna Categoria
         {% endfor %}
+        <hr>
         </p>
+<h2>⭐️ Recensioni</h2>
+
+{% if user.is_authenticated %}
+    <div style="border: 1px solid #007bff; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #eaf6ff;">
+        <h3>Lascia la tua Recensione</h3>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form_recensione.as_p }}
+            <button type="submit">Invia Recensione</button>
+        </form>
+    </div>
+{% else %}
+    <p>Devi <a href="{% url 'login' %}?next={% url 'dettaglio_libro' pk=libro.pk %}">accedere</a> per lasciare una recensione.</p>
+{% endif %}
+
+{% if recensioni_esistenti %}
+    <h3>Recensioni Lete ({{ recensioni_esistenti.count }})</h3>
+    <ul>
+    {% for recensione in recensioni_esistenti %}
+        <li style="border-bottom: 1px dashed #ccc; padding: 10px 0;">
+            <p><strong>Voto:</strong> 
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= recensione.voto %}
+                        ⭐
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+            </p>
+            <p>
+                *Commento:* {{ recensione.commento|default:"Nessun commento." }}<br>
+                <small>Di: {{ recensione.user.username }} il {{ recensione.data_creazione|date:"d/m/Y" }}</small>
+            </p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Non ci sono ancora recensioni per questo libro.</p>
+{% endif %}
+
+<hr>
         <p><strong>Anno di Pubblicazione:</strong> {{ libro.anno_pubblicazione }}</p>
         <p><strong>Descrizione:</strong> {{ libro.descrizione }}</p>
         <p><strong>Pagine:</strong> {{ libro.numero_pagine|default:"N/D" }}</p>
