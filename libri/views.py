@@ -79,6 +79,21 @@ def dettaglio_libro(request, pk):
         'recensioni_esistenti': libro.recensioni.all()
     }
     return render(request, 'libri/dettaglio_libro.html', context)
+def modifica_libro(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)
+    if request.method == 'POST':
+        form = LibroForm(request.POST, request.FILES, instance=libro)
+        if form.is_valid():
+            form.save()
+            return redirect('dettaglio_libro', pk=libro.pk)
+    else:
+        form = LibroForm(instance=libro)
+    context = {
+        'form' : form,
+        'libro' : libro,
+        'titolo_pagina' : f'Modifica: {libro.titolo}'
+    }
+    return render(request, 'libri/modifica_lbro.html', context)
 
 
 # Create your views here.

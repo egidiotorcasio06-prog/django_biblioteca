@@ -27,6 +27,16 @@
 </head>
 <body>
     <h1>{{ titolo_pagina }}</h1>
+
+    <h1>{{ libro.titolo }}</h1>
+
+{% if user.is_authenticated %}
+    <p>
+        <a href="{% url 'modifica_libro' pk=libro.pk %}" style="background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 4px; text-decoration: none;">
+            ✏️ Modifica Libro
+        </a>
+    </p>
+{% endif %}
     
     <div class="dettagli-libro">
         <p><strong>Autore:</strong> {{ libro.autore }} {{ libro.autore.nome }} {{ libro.autore.cognome }}</p>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titolo_pagina }}</title>
+</head>
+<body>
+    
+    <h1>{{ titolo_pagina }}</h1>
+    
+    <p>Stai modificando il libro: <strong>{{ libro.titolo }}</strong></p>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <button type="submit">Salva Modifiche</button>
+        <a href="{% url 'dettaglio_libro' pk=libro.pk %}">Annulla</a>
+    </form>
+
+</body>
+</html>
