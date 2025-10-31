@@ -5,6 +5,16 @@
     <title>Catalogo Libri</title>
 </head>
 <body>
+    <div style="text-align: right; margin-bottom: 20px;">
+    {% if user.is_authenticated %}
+        Benvenuto, <strong>{{ user.username }}</strong>!
+        (<a href="{% url 'logout' %}">Logout</a>)
+        | <a href="{% url 'aggiungi_libro' %}">➕ Aggiungi Libro</a>
+    {% else %}
+        <a href="{% url 'login' %}">Accedi</a> | <a href="{% url 'admin:index' %}">Registrati (Admin)</a>
+    {% endif %}
+</div>
+<hr>
     <h1>{% if titolo_pagina %}{{ titolo_pagina }}{% else %}Elenco Libri{% endif %}</h1>
     {% if statistiche.totale_libri %}
 <div style="border: 2px solid #007bff; padding: 15px; margin-bottom: 20px; background-color: #eaf6ff; border-radius: 5px;">
