@@ -41,7 +41,7 @@ def lista_libri(request):
         'filter'  
     }
     return render(request, 'libri/lista_libri.html', context)
-
+@login_required(redirect_field_name='next', login_url='/accounts/login/')
 def aggiungi_libro(request):
     if request.method == 'POST':
         form = LibroForm(request.POST)
